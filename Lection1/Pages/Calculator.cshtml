@@ -1,0 +1,45 @@
+﻿@page
+@model CalculatorModel
+@using System.ComponentModel.DataAnnotations
+@using System.Reflection
+@{
+    ViewData["Title"] = "Калькулятор";
+}
+
+
+<div class="container mt-5">
+    <h1 class="text-center mb-4">Калькулятор</h1>
+
+    <form method="post">
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label for="Number1" class="form-label">Первое число:</label>
+                <input type="number" step="any" class="form-control" asp-for="Number1" required />
+            </div>
+
+            <div class="col-md-6">
+                <label for="Number2" class="form-label">Второе число:</label>
+                <input type="number" step="any" class="form-control" asp-for="Number2" />
+            </div>
+        </div>
+
+		<h5>Выберите операцию:</h5>
+		<div class="operation-grid">
+			@foreach (var op in Model.Operations)
+			{
+				var displayName = op.GetType().GetField(op.ToString())?.GetCustomAttribute<DisplayAttribute>()?.Name ?? op.ToString();
+				<button type="submit" name="SelectedOperation" value="@op" class="btn btn-primary operation-btn">
+					@displayName
+				</button>
+			}
+        </div>
+    </form>
+
+    @if (!string.IsNullOrEmpty(Model.Result))
+    {
+        <div class="alert alert-success mt-4">
+            <h4>Результат:</h4>
+            <p class="fs-5 mb-0">@Model.Result</p>
+        </div>
+    }
+</div>
