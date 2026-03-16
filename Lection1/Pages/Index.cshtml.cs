@@ -15,5 +15,12 @@ using System.ComponentModel.DataAnnotations;
 public class IndexModel : PageModel
 
 {
+    public string Message { get; set; }
+
+
+    public IndexModel(ITimeService timeService)
+    {
+        Message = $"Текущее время: {timeService.Time}";
+    }
 
 }

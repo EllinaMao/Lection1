@@ -1,6 +1,10 @@
 ﻿@page
 @model IndexModel
-
+@inject ITimeService timeServince
 @{
-    ViewData["Title"] = "Калькулятор";
+    ViewData["Title"] = "Home";
 }
+
+@Model.Message
+
+@timeServince.Time
