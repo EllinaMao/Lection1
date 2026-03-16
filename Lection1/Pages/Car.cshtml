@@ -1,0 +1,29 @@
+﻿@page
+@model Lection1.Pages.CarModel
+@{
+	ViewData["Title"] = "Cars";
+}
+@* /*
+ Разработайте веб-страницу с использованием ASP.NET Core Razor Pages, которая принимает массив объектов класса Car и отображает их на страницу. Для хранения автомобилей использовать сервис с жизненным циклом – Singleton.
+Принимать массив объектов она может 2-мя способами:
+1) Get запросом, через строку запроса.
+2) Post запросом, например через форму.
+ */ *@
+
+ <h2>@ViewData["Title"]</h2>
+ 
+<p>
+    <a asp-page="Create">Create car</a>
+</p>
+ 
+<table class="table">
+    <thead>
+        <tr><th>Name</th><th>Description</th></tr>
+    </thead>
+    <tbody>
+        @foreach (var car in Model.Cars)
+        {
+            <tr><td>@car.Name</td><td>@car.Description</td></tr>
+        }
+    </tbody>
+</table>

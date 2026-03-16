@@ -1,8 +1,11 @@
+using Lection1.Models;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddTransient<ITimeService, SimpleTimeService>();
+builder.Services.AddSingleton<ICar, CarService>();
 
 var app = builder.Build();
 
