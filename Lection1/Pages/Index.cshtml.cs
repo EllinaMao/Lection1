@@ -1,63 +1,106 @@
 using Lection1.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.ComponentModel.DataAnnotations;
 
 
 /*
- Создайте метод, возводящий в степень число. Отобразите результат метода.
-Весь код выполняйте только на странице Razor Page - .cshtml.
- 
+* Разработайте веб-страницу с использованием ASP.NET Core Razor Pages, которая будет представлять простой калькулятор для выполнения математических операций.
+Разместите форму на странице, в которой пользователь может вводить числа и выбирать математическую операцию (сложение, вычитание, умножение, деление).
+При отправке формы обработайте введенные пользователем данные на сервере с использованием синтаксиса Razor на странице cshtml.
+Выведите результат операции на страницу для пользователя.*
+
+
  */
 public class IndexModel : PageModel
 
 {
+    [BindProperty]
+    public double Number1 { get; set; }
 
-    List<Person> people;
+    [BindProperty]
+    public double Number2 { get; set; }
 
-    public Person Person { get; set; }
+    [BindProperty]
+    public Operation SelectedOperation { get; set; }
 
-    public IndexModel()
+    public string Result { get; set; }
 
+    public Operation[] Operations { get; set; }
+
+    public void OnGet()
     {
+        Operations = (Operation[])Enum.GetValues(typeof(Operation));
+    }
 
-        people = new List<Person>()
+    public void OnPost()
+    {
+        Operations = (Operation[])Enum.GetValues(typeof(Operation));
 
+        try
+        {
+            double result = SelectedOperation switch
             {
+                Operation.Add => Math.Round(Number1 + Number2, 10),
+                Operation.Subtract => Math.Round(Number1 - Number2, 10),
+                Operation.Multiply => Math.Round(Number1 * Number2, 10),
+                Operation.Divide => Number2 != 0 ? Math.Round(Number1 / Number2, 10) : throw new DivideByZeroException(),
+                Operation.Power => Math.Pow(Number1, Number2),
+                Operation.SquareRoot => Number1 >= 0 ? Math.Sqrt(Number1) : throw new InvalidOperationException("Корень из отрицательного числа"),
+                Operation.Percent => Math.Round(Number1 % Number2, 10),
 
-                new Person{ Name="Tom", Age=23},
-
-                new Person {Name = "Sam", Age=25},
-
-                new Person {Name="Bob", Age=23},
-
-                new Person{Name="Tim", Age=25}
-
+                _ => throw new InvalidOperationException("Неверная операция")
             };
 
-    }
+            string symbol = SelectedOperation switch
+            {
+                Operation.Add => "+",
+                Operation.Subtract => "-",
+                Operation.Multiply => "*",
+                Operation.Divide => "/",
+                Operation.Power => "^",
+                Operation.SquareRoot => "√",
+                Operation.Percent => "%",
 
-    public IActionResult OnGet(string name)
+                _ => ""
+            };
 
-    {
-
-        Person = people.FirstOrDefault(p => p.Name == name);
-
-        if (Person == null)
-
-        {
-
-            return NotFound("User not found");
-
+            Result = SelectedOperation == Operation.SquareRoot 
+                ? $"{symbol}({Number1}) = {result}"
+                : $"{Number1} {symbol} {Number2} = {result}";
         }
-
-        else
-
+        catch (DivideByZeroException)
         {
-
-            return Page();
-
+            Result = "Ошибка: деление на ноль невозможно";
         }
-
+        catch (Exception ex)
+        {
+            Result = $"Ошибка: {ex.Message}";
+        }
     }
+}
+public enum Operation
+{
+    [Display(Name = "+")]
+    Add,
+
+    [Display(Name = "−")]
+    Subtract,
+
+    [Display(Name = "×")]
+    Multiply,
+
+    [Display(Name = "÷")]
+    Divide,
+
+    [Display(Name = "xʸ")]
+    Power,
+
+    [Display(Name = "√")]
+    SquareRoot,
+
+    [Display(Name = "%")]
+    Percent,
+
 
 }
